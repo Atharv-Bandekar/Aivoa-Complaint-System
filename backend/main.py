@@ -10,6 +10,7 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import StateGraph, END
 from dotenv import load_dotenv
+from fastapi import UploadFile, File
 
 # ==========================================
 # 0. CONFIGURATION & LOGGING
@@ -84,6 +85,11 @@ def extract_complaint_node(state: GraphState) -> GraphState:
         system_prompt = """
         You are an AI Quality Assurance assistant for a pharmaceutical manufacturing QMS.
         Extract the relevant complaint details from the user's text. 
+        
+        CRITICAL DATA MAPPING RULES:
+        - 'customer_name': Extract the specific name of the individual reporting the issue (e.g., the doctor, pharmacist, or patient).
+        - 'complaint_source': Extract the name of the hospital, pharmacy, or institution where the issue occurred.
+        
         If a field is not mentioned, leave it empty.
         Use your pharmaceutical knowledge to assess the 'initial_severity', 'priority', and 'suggested_next_action'.
         
@@ -180,3 +186,79 @@ async def extract_complaint_endpoint(request: APIRequest):
         
     logger.info("Returning successfully populated QMS data to client.")
     return final_state["extracted_json"]
+
+
+@app.post("/api/extract-document", response_model=ComplaintData)
+async def extract_document_endpoint(file: UploadFile = File(...)):
+    """
+    API Endpoint to process uploaded complaint documents (PDF or text files) 
+    into structured QMS JSON.
+    
+    Args:
+        file (UploadFile): The uploaded document file (PDF, TXT, etc.).
+        
+    Returns:
+        ComplaintData: The strictly typed JSON response to populate the frontend form.
+    """
+    logger.info(f"Received document upload: {file.filename} ({file.content_type})")
+    
+    try:
+        file_extension = file.filename.split(".")[-1].lower()
+        extracted_text = ""
+        
+        # Read file contents into memory
+        file_bytes = await file.read()
+        
+        if file_extension == "pdf":
+            import io
+            from PyPDF2 import PdfReader
+            
+            pdf_file = io.BytesIO(file_bytes)
+            reader = PdfReader(pdf_file)
+            
+            for page_idx, page in enumerate(reader.pages):
+                text = page.extract_text()
+                if text:
+                    extracted_text += text + "\n"
+            
+            logger.info(f"Successfully extracted {len(reader.pages)} pages from PDF via PyPDF2.")
+            
+        elif file_extension in ["txt", "eml", "docx"]:
+            # Fallback text decoding for plain text / email formats
+            extracted_text = file_bytes.decode("utf-8", errors="ignore")
+            logger.info("Successfully decoded text/email document.")
+        else:
+            raise HTTPException(
+                status_code=400, 
+                detail="Unsupported file format. Please upload a PDF, TXT, or EML file."
+            )
+            
+        if not extracted_text.strip():
+            raise HTTPException(
+                status_code=400, 
+                detail="The uploaded document appears to be empty or unreadable."
+            )
+
+        # Pass the extracted document text into our LangGraph state machine
+        final_state = app_graph.invoke({
+            "raw_text": extracted_text, 
+            "extracted_json": None, 
+            "error": None
+        })
+        
+        if final_state.get("error"):
+            logger.warning(f"Graph execution returned an error: {final_state['error']}")
+            raise HTTPException(status_code=502, detail=final_state["error"])
+            
+        if not final_state.get("extracted_json"):
+            logger.error("Graph executed successfully but returned empty JSON from document.")
+            raise HTTPException(status_code=500, detail="Failed to parse document data.")
+            
+        logger.info(f"Successfully processed document {file.filename} and returning QMS JSON.")
+        return final_state["extracted_json"]
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error(f"Document processing failed: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
