@@ -5,12 +5,13 @@ import { useSelector } from 'react-redux';
 /**
  * ComplaintForm Component
  * Renders the read-only QMS form fields mapped directly to the Redux global state.
+ * Arranged with symmetrical spacing and proper clearance from the scrollbar.
  */
 const ComplaintForm = () => {
   const complaintData = useSelector((state) => state.complaint);
 
   return (
-    <div className="space-y-6 text-sm">
+    <div className="space-y-6 pr-3 text-sm">
       
       {/* 1. Origin & Customer Details */}
       <div>
@@ -141,7 +142,7 @@ const ComplaintForm = () => {
       </div>
 
       {/* 4. Initial Assessment & Priority (AI Copilot Section) */}
-      <div>
+      <div className="pb-2">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
           4. Initial Assessment & Priority (AI Co-Pilot)
         </h3>
@@ -167,7 +168,6 @@ const ComplaintForm = () => {
         </div>
         <div>
           <label className="block text-xs text-gray-400 mb-1">Suggested Next Action</label>
-          {/* Converted to a textarea so long recommendations wrap cleanly */}
           <textarea
             readOnly
             rows={2}
