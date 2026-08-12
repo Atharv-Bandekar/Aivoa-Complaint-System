@@ -1,5 +1,6 @@
 import os
 import logging
+from langchain_core.output_parsers import JsonOutputParser
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -66,33 +67,28 @@ class GraphState(TypedDict):
     error: Optional[str]
 
 def extract_complaint_node(state: GraphState) -> GraphState:
-    """
-    LangGraph node that calls the Groq LLM to extract structured data.
-    
-    Args:
-        state (GraphState): The current state containing the raw_text.
-        
-    Returns:
-        GraphState: The updated state containing the extracted_json or an error message.
-    """
+    """LangGraph node that calls Groq to extract structured data using a bulletproof JSON parser."""
     logger.info("Initiating LLM extraction process.")
     
     try:
-        # Initialize Groq client
         llm = ChatGroq(
-            temperature=0, # Temperature 0 ensures deterministic, factual extraction
-            model_name="gemma2-9b-it", 
+            temperature=0, 
+            model_name="llama-3.3-70b-versatile", 
             groq_api_key=os.getenv("GROQ_API_KEY")
         )
         
-        # Force the LLM to output our exact Pydantic schema
-        structured_llm = llm.with_structured_output(ComplaintData)
+        # 1. Setup the rock-solid JSON parser tied to our schema
+        parser = JsonOutputParser(pydantic_object=ComplaintData)
         
+        # 2. Inject the format instructions directly into the prompt
         system_prompt = """
         You are an AI Quality Assurance assistant for a pharmaceutical manufacturing QMS.
         Extract the relevant complaint details from the user's text. 
         If a field is not mentioned, leave it empty.
         Use your pharmaceutical knowledge to assess the 'initial_severity', 'priority', and 'suggested_next_action'.
+        
+        CRITICAL: You must format your output as a valid JSON object.
+        {format_instructions}
         """
         
         prompt_template = ChatPromptTemplate.from_messages([
@@ -100,17 +96,23 @@ def extract_complaint_node(state: GraphState) -> GraphState:
             ("human", "{text}")
         ])
         
-        chain = prompt_template | structured_llm
+        # 3. Chain the prompt, model, and parser together
+        chain = prompt_template | llm | parser
         
         # Execute the chain
-        result = chain.invoke({"text": state["raw_text"]})
-        logger.info("Successfully extracted structured data from Groq.")
+        result = chain.invoke({
+            "text": state["raw_text"],
+            "format_instructions": parser.get_format_instructions()
+        })
         
-        return {"extracted_json": result.model_dump(), "error": None}
+        logger.info("Successfully extracted structured data from Groq.")
+        return {"extracted_json": result, "error": None}
         
     except Exception as e:
         logger.error(f"LLM Extraction failed: {str(e)}", exc_info=True)
-        return {"extracted_json": None, "error": "The AI model failed to process the request."}
+        # We are exposing the raw error here so if it fails again, Swagger will tell us exactly why!
+        return {"extracted_json": None, "error": f"DEBUG INFO: {str(e)}"}
+
 
 # Build the LangGraph State Machine
 workflow = StateGraph(GraphState)
