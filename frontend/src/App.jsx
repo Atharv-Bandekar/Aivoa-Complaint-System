@@ -4,7 +4,7 @@ import ComplaintForm from './components/ComplaintForm';
 import AIAssistant from './components/AIAssistant';
 
 function App() {
-  // 👉 LISTENING FOR THE SAVE FLAG FROM REDUX
+  // LISTENING FOR THE SAVE FLAG FROM REDUX
   const isSaved = useSelector((state) => state.complaint.isSaved);
 
   return (
@@ -18,7 +18,7 @@ function App() {
             <p className="text-sm text-gray-400">API & FDF Quality Assurance Module</p>
           </div>
           
-          {/* 👉 THE DYNAMIC BADGE LOGIC */}
+          {/* THE DYNAMIC BADGE LOGIC */}
           {isSaved ? (
             <span className="px-3 py-1 text-xs font-medium text-emerald-400 bg-emerald-950/30 border border-emerald-900/50 rounded-md transition-colors duration-500">
               Complaint Logged
