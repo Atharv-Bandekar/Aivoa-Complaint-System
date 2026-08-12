@@ -1,7 +1,8 @@
 // frontend/src/components/ComplaintForm.jsx
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Save, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { resetComplaintData, updateComplaintData} from '../store/complaintSlice';
+import { Save, CheckCircle2, AlertCircle, Loader2, RefreshCcw } from 'lucide-react';
 
 /**
  * ComplaintForm Component
@@ -9,13 +10,13 @@ import { Save, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
  */
 const ComplaintForm = () => {
   const complaintData = useSelector((state) => state.complaint);
+  const dispatch = useDispatch();
   
   // Local state for the save button UI
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'success' | 'error' | null
 
   const handleSaveComplaint = async () => {
-    // Basic validation to ensure we aren't saving an empty form
     if (!complaintData.complaint_source && !complaintData.detailed_complaint_description) {
       alert("No extracted data to save yet. Please process a complaint first.");
       return;
@@ -39,7 +40,9 @@ const ComplaintForm = () => {
 
       setSaveStatus('success');
       
-      // Reset the success message after 3 seconds
+      // 👉 THIS IS THE CRITICAL LINE THAT FLIPS THE BADGE
+      dispatch(updateComplaintData({ isSaved: true }));
+      
       setTimeout(() => setSaveStatus(null), 3000);
 
     } catch (error) {
@@ -231,36 +234,48 @@ const ComplaintForm = () => {
         </div>
       </div>
 
-      {/* 5. Database Save Actions */}
-      <div className="pt-6 mt-4 border-t border-[#2A2A2A] flex items-center justify-end gap-4">
+      {/* 5. Database Save Actions (Modern UI) */}
+      <div className="pt-6 mt-4 border-t border-[#2A2A2A] flex items-center justify-between">
         
-        {saveStatus === 'success' && (
-          <span className="text-emerald-400 text-xs flex items-center gap-1 font-medium">
-            <CheckCircle2 className="w-4 h-4" /> Saved to Postgres!
-          </span>
-        )}
-        
-        {saveStatus === 'error' && (
-          <span className="text-rose-400 text-xs flex items-center gap-1 font-medium">
-            <AlertCircle className="w-4 h-4" /> Failed to save
-          </span>
-        )}
-
+        {/* Left Side: Reset Button */}
         <button
-          onClick={handleSaveComplaint}
-          disabled={isSaving}
-          className="bg-[#3B82F6] hover:bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => dispatch(resetComplaintData())}
+          className="group flex items-center gap-2 px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#1A1A1A] border border-transparent hover:border-[#2A2A2A] transition-all duration-300"
         >
-          {isSaving ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" /> Saving...
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4" /> Save Complaint
-            </>
-          )}
+          <RefreshCcw className="w-4 h-4 group-hover:-rotate-180 transition-transform duration-500" />
+          Reset Form
         </button>
+
+        {/* Right Side: Status & Save Button */}
+        <div className="flex items-center gap-4">
+          {saveStatus === 'success' && (
+            <span className="text-emerald-400 text-xs flex items-center gap-1.5 font-medium animate-in fade-in slide-in-from-right-4 duration-300">
+              <CheckCircle2 className="w-4 h-4" /> Saved to Postgres
+            </span>
+          )}
+          
+          {saveStatus === 'error' && (
+            <span className="text-rose-400 text-xs flex items-center gap-1.5 font-medium animate-in fade-in slide-in-from-right-4 duration-300">
+              <AlertCircle className="w-4 h-4" /> Save failed
+            </span>
+          )}
+
+          <button
+            onClick={handleSaveComplaint}
+            disabled={isSaving}
+            className="relative flex items-center gap-2 px-6 py-2.5 rounded-lg font-medium text-white shadow-lg overflow-hidden transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-blue-500/25 border border-blue-400/20"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" /> Save Complaint
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
     </div>

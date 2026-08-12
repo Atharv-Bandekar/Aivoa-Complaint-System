@@ -1,10 +1,8 @@
 // frontend/src/store/complaintSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
-/**
- * Initial state perfectly matches the backend FastAPI ComplaintData schema.
- */
 const initialState = {
+  isSaved: false, // <-- Add this tracking flag
   complaint_source: '',
   customer_name: '',
   product_name: '',
@@ -18,28 +16,21 @@ const initialState = {
   detailed_complaint_description: '',
   initial_severity: '',
   priority: '',
-  suggested_next_action: '',
+  suggested_next_action: ''
 };
 
 const complaintSlice = createSlice({
   name: 'complaint',
   initialState,
   reducers: {
-    /**
-     * Takes the exact JSON returned from the LangGraph backend and updates the UI state.
-     */
     updateComplaintData: (state, action) => {
-      // Merge the incoming extracted data with the current state
       return { ...state, ...action.payload };
     },
-    /**
-     * Clears the form back to empty strings.
-     */
-    resetComplaintForm: () => {
+    resetComplaintData: () => {
       return initialState;
-    },
-  },
+    }
+  }
 });
 
-export const { updateComplaintData, resetComplaintForm } = complaintSlice.actions;
+export const { updateComplaintData, resetComplaintData } = complaintSlice.actions;
 export default complaintSlice.reducer;
