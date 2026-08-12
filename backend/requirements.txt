@@ -6,3 +6,5 @@ langchain-groq==0.1.5
 python-dotenv==1.0.1
 python-multipart==0.0.9 # For file uploads via FastAPI
 PyPDF2==3.0.1 # For extracting text from PDF uploads
+sqlalchemy
+psycopg2-binary

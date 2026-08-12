@@ -1,18 +1,19 @@
+# backend/main.py
 import os
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-# Import our modular routers
-from routers import extract_router
+# Modular routers and database imports
+from routers import extract_router, complaint_router
+from models.database import engine, Base
 
 # ==========================================
-# APPLICATION ENTRY POINT
+# APPLICATION ENTRY POINT & DB INIT
 # ==========================================
 load_dotenv()
 
-# Global Logging Configuration
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -23,14 +24,16 @@ if not os.getenv("GROQ_API_KEY"):
     logger.critical("GROQ_API_KEY is missing. Application cannot start.")
     raise RuntimeError("Missing GROQ_API_KEY")
 
-# Initialize FastAPI Application
+# Create all SQL tables automatically on startup if they don't exist
+Base.metadata.create_all(bind=engine)
+logger.info("Database tables verified/created successfully.")
+
 app = FastAPI(
     title="AIVOA QMS API",
     description="Enterprise backend for pharmaceutical complaint management.",
     version="1.0.0"
 )
 
-# Configure Cross-Origin Resource Sharing (CORS)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -39,10 +42,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register modular routers
-app.include_router(extract_router.router, prefix="/api", tags=["Extraction"])
+# Register all modular routers
+app.include_router(extract_router.router, prefix="/api", tags=["AI Extraction"])
+app.include_router(complaint_router.router, prefix="/api", tags=["Database CRUD"])
 
 @app.get("/")
 async def root_health_check():
-    """Simple health check endpoint to verify server status."""
-    return {"status": "online", "service": "AIVOA QMS API", "version": "1.0.0"}
+    return {"status": "online", "service": "AIVOA QMS API", "database": "connected"}
