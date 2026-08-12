@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 /**
  * ComplaintForm Component
  * Renders the read-only QMS form fields mapped directly to the Redux global state.
- * Arranged with symmetrical spacing and proper clearance from the scrollbar.
+ * Arranged with symmetrical spacing and proper faded placeholders.
  */
 const ComplaintForm = () => {
   const complaintData = useSelector((state) => state.complaint);
@@ -24,8 +24,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.complaint_source || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+              value={complaintData.complaint_source || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
           <div>
@@ -33,8 +34,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.customer_name || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+              value={complaintData.customer_name || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
         </div>
@@ -51,8 +53,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.product_name || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+              value={complaintData.product_name || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
           <div>
@@ -60,8 +63,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.product_strength_grade || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+              value={complaintData.product_strength_grade || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
           <div>
@@ -69,8 +73,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.batch_lot_number || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+              value={complaintData.batch_lot_number || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
           <div>
@@ -78,8 +83,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.quantity_affected || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+              value={complaintData.quantity_affected || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
           <div>
@@ -87,8 +93,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.manufacturing_date || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+              value={complaintData.manufacturing_date || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
           <div>
@@ -96,8 +103,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.expiry_date || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+              value={complaintData.expiry_date || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
         </div>
@@ -115,8 +123,9 @@ const ComplaintForm = () => {
               <input
                 type="text"
                 readOnly
-                value={complaintData.complaint_type || 'Awaiting AI extraction...'}
-                className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+                value={complaintData.complaint_type || ''}
+                placeholder="Awaiting AI extraction..."
+                className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
               />
             </div>
             <div>
@@ -124,8 +133,9 @@ const ComplaintForm = () => {
               <input
                 type="text"
                 readOnly
-                value={complaintData.complaint_date || 'Awaiting AI extraction...'}
-                className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default"
+                value={complaintData.complaint_date || ''}
+                placeholder="Awaiting AI extraction..."
+                className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default"
               />
             </div>
           </div>
@@ -134,8 +144,9 @@ const ComplaintForm = () => {
             <textarea
               readOnly
               rows={3}
-              value={complaintData.detailed_complaint_description || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default resize-none"
+              value={complaintData.detailed_complaint_description || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default resize-none"
             />
           </div>
         </div>
@@ -152,8 +163,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.initial_severity || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-blue-400 font-medium focus:outline-none cursor-default"
+              value={complaintData.initial_severity || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-blue-400 font-medium placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
           <div>
@@ -161,8 +173,9 @@ const ComplaintForm = () => {
             <input
               type="text"
               readOnly
-              value={complaintData.priority || 'Awaiting AI extraction...'}
-              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-blue-400 font-medium focus:outline-none cursor-default"
+              value={complaintData.priority || ''}
+              placeholder="Awaiting AI extraction..."
+              className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-blue-400 font-medium placeholder-gray-600 focus:outline-none cursor-default"
             />
           </div>
         </div>
@@ -171,8 +184,9 @@ const ComplaintForm = () => {
           <textarea
             readOnly
             rows={2}
-            value={complaintData.suggested_next_action || 'Awaiting AI extraction...'}
-            className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 focus:outline-none cursor-default resize-none"
+            value={complaintData.suggested_next_action || ''}
+            placeholder="Awaiting AI extraction..."
+            className="w-full bg-[#1A1A1A] border border-borderDark rounded-lg px-3 py-2 text-gray-300 placeholder-gray-600 focus:outline-none cursor-default resize-none"
           />
         </div>
       </div>
