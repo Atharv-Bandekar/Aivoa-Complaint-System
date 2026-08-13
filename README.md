@@ -60,6 +60,7 @@ graph TD
     UI -->|HTTP POST| Router
     Service <-->|Prompt & Parse| LLM
     Model <-->|Read/Write| DB
+```
 
 ---
 
