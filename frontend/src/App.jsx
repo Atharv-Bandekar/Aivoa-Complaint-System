@@ -39,12 +39,8 @@ function App() {
       <div className="w-1/2 h-full bg-[#121212] border border-[#2A2A2A] rounded-xl p-6 flex flex-col shadow-lg overflow-hidden">
         <div className="flex justify-between items-center mb-6 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-[#3B82F6] text-xl">✨</span>
             <h2 className="text-lg font-medium text-white">AI Complaint Intake Assistant</h2>
           </div>
-          <span className="px-2 py-1 text-[10px] font-bold text-[#3B82F6] bg-blue-950/30 rounded">
-            BETA
-          </span>
         </div>
 
         <div className="flex-1 overflow-hidden flex flex-col">

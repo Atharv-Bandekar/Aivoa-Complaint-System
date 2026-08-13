@@ -13,10 +13,24 @@ router = APIRouter()
 async def extract_text_endpoint(request: APIRequest):
     """
     Endpoint to process natural language text into structured QMS JSON.
+    Supports conversational refinement if 'current_state' is provided.
     """
     logger.info(f"Received text extraction request. Payload length: {len(request.prompt)}")
     
-    final_state = app_graph.invoke({"raw_text": request.prompt, "extracted_json": None, "error": None})
+    # 👉 DYNAMIC PROMPT LOGIC FOR EDITS
+    prompt_to_send = request.prompt
+    if request.current_state:
+        logger.info("Edit mode activated. Injecting current state into prompt context.")
+        prompt_to_send = (
+            f"THE USER IS REQUESTING AN EDIT TO AN EXISTING FORM.\n"
+            f"Current Form Data: {request.current_state}\n"
+            f"Task: Update this existing data based exactly on the user's new prompt.\n"
+            f"Constraint: You MUST retain all other existing fields exactly as they are unless explicitly asked to change them.\n\n"
+            f"User Prompt: {request.prompt}"
+        )
+    
+    # Pass the dynamically constructed prompt to LangGraph
+    final_state = app_graph.invoke({"raw_text": prompt_to_send, "extracted_json": None, "error": None})
     
     if final_state.get("error"):
         logger.warning(f"Graph execution error: {final_state['error']}")
@@ -26,6 +40,7 @@ async def extract_text_endpoint(request: APIRequest):
         raise HTTPException(status_code=500, detail="Failed to format the extracted data.")
         
     return final_state["extracted_json"]
+
 
 @router.post("/extract-document", response_model=ComplaintData)
 async def extract_document_endpoint(file: UploadFile = File(...)):

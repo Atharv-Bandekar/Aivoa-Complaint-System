@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional, Dict, Any
 
 # ==========================================
 # SCHEMAS: Data Validation Layer
@@ -29,3 +30,4 @@ class ComplaintData(BaseModel):
 class APIRequest(BaseModel):
     """Schema for incoming natural language client requests."""
     prompt: str = Field(..., min_length=5, description="The raw text string from the user.")
+    current_state: Optional[Dict[str, Any]] = None

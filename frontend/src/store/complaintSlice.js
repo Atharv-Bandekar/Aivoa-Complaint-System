@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isSaved: false, // <-- Add this tracking flag
+  isSaved: false, 
   complaint_source: '',
   customer_name: '',
   product_name: '',
