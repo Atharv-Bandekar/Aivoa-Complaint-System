@@ -124,7 +124,7 @@ npm run dev
 
 ## 🎥 Demonstration Video
 
-[**Link to 5-10 Minute End-to-End Walkthrough Video**] *()*
+[**Link to 5-10 Minute End-to-End Walkthrough Video**] *(https://drive.google.com/drive/folders/1_gqcftNNAySQ4DCDPmIyPJmtJwW0nEsM?usp=drive_link)*
 
 The video covers:
 
