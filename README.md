@@ -29,6 +29,38 @@ To ensure separation of concerns and maintainability, the backend strictly follo
 * `/services` - Business logic, including the LangGraph AI state machine.
 * `/routers` - RESTful API endpoints.
 
+### Data Flow
+
+```mermaid
+graph TD
+    %% Frontend
+    subgraph Frontend [React + Redux Toolkit]
+        UI[User Interface]
+        State[Redux Store]
+        UI <-->|Updates| State
+    end
+
+    %% Backend
+    subgraph Backend [FastAPI Enterprise Architecture]
+        Router[API Routers]
+        Service[Service Layer]
+        Schema[Pydantic Schemas]
+        Model[SQLAlchemy Models]
+        
+        Router -->|Delegates| Service
+        Service -->|Validates| Schema
+        Service -->|Maps to| Model
+    end
+
+    %% External & DB
+    LLM[LangGraph + Groq LLM]
+    DB[(PostgreSQL / Supabase)]
+
+    %% Connections
+    UI -->|HTTP POST| Router
+    Service <-->|Prompt & Parse| LLM
+    Model <-->|Read/Write| DB
+
 ---
 
 ## ⚙️ Local Setup & Installation
