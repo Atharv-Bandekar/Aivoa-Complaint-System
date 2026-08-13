@@ -49,7 +49,7 @@ const AIAssistant = () => {
       const extractedJson = await response.json();
       dispatch(updateComplaintData(extractedJson));
 
-      // 👉 Append success response to chat history
+      //  Append success response to chat history
       setMessages((prev) => [
         ...prev, 
         { 

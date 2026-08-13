@@ -17,7 +17,7 @@ async def extract_text_endpoint(request: APIRequest):
     """
     logger.info(f"Received text extraction request. Payload length: {len(request.prompt)}")
     
-    # 👉 DYNAMIC PROMPT LOGIC FOR EDITS
+    #  DYNAMIC PROMPT LOGIC FOR EDITS
     prompt_to_send = request.prompt
     if request.current_state:
         logger.info("Edit mode activated. Injecting current state into prompt context.")
