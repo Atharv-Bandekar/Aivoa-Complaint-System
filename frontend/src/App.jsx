@@ -4,8 +4,12 @@ import ComplaintForm from './components/ComplaintForm';
 import AIAssistant from './components/AIAssistant';
 
 function App() {
-  // LISTENING FOR THE SAVE FLAG FROM REDUX
-  const isSaved = useSelector((state) => state.complaint.isSaved);
+  // Pull the whole complaint state to check if data exists
+  const complaintState = useSelector((state) => state.complaint);
+  const { isSaved, product_name } = complaintState;
+  
+  // Check if the AI has successfully extracted data
+  const hasExtractedData = Boolean(product_name);
 
   return (
     <div className="h-screen w-screen flex p-4 gap-4 box-border bg-[#0A0A0A]">
@@ -18,15 +22,17 @@ function App() {
             <p className="text-sm text-gray-400">API & FDF Quality Assurance Module</p>
           </div>
           
-          {/* THE DYNAMIC BADGE LOGIC */}
-          {isSaved ? (
-            <span className="px-3 py-1 text-xs font-medium text-emerald-400 bg-emerald-950/30 border border-emerald-900/50 rounded-md transition-colors duration-500">
-              Complaint Logged
-            </span>
-          ) : (
-            <span className="px-3 py-1 text-xs font-medium text-orange-400 bg-orange-950/30 border border-orange-900/50 rounded-md transition-colors duration-500">
-              Pending Triage
-            </span>
+          {/* UPDATED: THE DYNAMIC BADGE LOGIC */}
+          {hasExtractedData && (
+            isSaved ? (
+              <span className="px-3 py-1 text-xs font-medium text-emerald-400 bg-emerald-950/30 border border-emerald-900/50 rounded-md transition-colors duration-500">
+                Complaint Logged
+              </span>
+            ) : (
+              <span className="px-3 py-1 text-xs font-medium text-orange-400 bg-orange-950/30 border border-orange-900/50 rounded-md transition-colors duration-500">
+                Pending Triage
+              </span>
+            )
           )}
         </div>
         
