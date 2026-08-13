@@ -109,7 +109,7 @@ const AIAssistant = () => {
 
   const loadSamplePrompt = () => {
     setPromptText(
-      "Apollo Pharmacy reported discolored capsules in Amoxicillin Capsules 500 mg. Batch number AMX240602. Manufacturing date March 2026. Expiry date February 2028. Please log this complaint"
+      "On August 12th, 2026, Apollo Pharmacy reported that patient Michael Scott returned 3 boxes of Amoxicillin Capsules 500 mg due to discolored capsules. Batch number AMX240602. Manufacturing date March 2026. Expiry date February 2028. Please log this complaint."
     );
   };
 
