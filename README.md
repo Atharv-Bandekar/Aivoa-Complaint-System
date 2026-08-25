@@ -1,4 +1,4 @@
-# AIVOA - AI-Powered Customer Complaint Management System
+# AI-Powered Customer Complaint Management System
 
 An enterprise-grade, AI-driven Quality Management System (QMS) module designed for the pharmaceutical industry (API & FDF). This application automates the intake, triage, and risk assessment of customer complaints using advanced LLM entity extraction and document parsing.
 
@@ -136,4 +136,4 @@ The video covers:
 
 **Author:** Atharv Bandekar
 
-**Developed for:** AIVOA Round 1 Product Engineer Assignment
+
